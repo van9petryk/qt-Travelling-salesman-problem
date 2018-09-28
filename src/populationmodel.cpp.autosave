@@ -1,0 +1,43 @@
+#include "populationmodel.h"
+
+PopulationModel::PopulationModel(const Evolution &evolution) :
+{
+
+}
+
+int PopulationModel::rowCount(const QModelIndex &parent) const
+{
+    return population.size();
+}
+
+int PopulationModel::columnCount(const QModelIndex &parent) const
+{
+    return 2;
+}
+
+QVariant PopulationModel::data(const QModelIndex &index, int role) const
+{
+    if(role == Qt::DisplayRole)
+        return index.row();
+    if(role == Qt::CheckStateRole)
+        return checkedItem.contains(index.row()) ? Qt::Checked : Qt::Unchecked;
+    else return QVariant();
+}
+
+bool PopulationModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (role == Qt::CheckStateRole){
+        if (checkedItem.contains(index.row()))
+            checkedItem.removeOne(index.row());
+        else
+            checkedItem.append(index.row());
+        emit dataChanged(index, index);
+    }
+    else
+        return false;
+}
+
+Qt::ItemFlags PopulationModel::flags(const QModelIndex &index) const
+{
+    return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable;
+}
